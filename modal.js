@@ -1,6 +1,11 @@
 class Modal extends HTMLElement {
   constructor() {
     super();
+
+    // Global attributes
+    this.isOpened = false;
+
+    // Shadow DOM
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.innerHTML = `
         <style>
@@ -66,17 +71,48 @@ class Modal extends HTMLElement {
 
         <div id="modal">
           <header>
-            <h1>Please Confirm</h1>
+            <slot name="title">Please confirm payment</slot>
           </header>
           <section id="main">
             <slot></slot>
           </section>
           <section id="actions">
-            <button>Cancel</button>
-            <button>Confirm</button>
+            <button id="cancel-btn">Cancel</button>
+            <button id="ok-btn">OK</button>
           </section>
         </div>
     `;
+
+    const cancelBtn = this.shadowRoot.querySelector('#cancel-btn');
+    const confirmBtn = this.shadowRoot.querySelector('#ok-btn');
+
+    cancelBtn.addEventListener('click', this._cancel.bind(this));
+    confirmBtn.addEventListener('click', this._confirm.bind(this));
+  }
+
+  open() {
+    if (this.isOpened === true) {
+      this.setAttribute('opened', '');
+    }
+  }
+
+  close() {
+    if (this.hasAttribute('opened')) {
+      this.removeAttribute('opened');
+    }
+    this.isOpened = false;
+  }
+
+  _cancel(event) {
+    this.close();
+    const cancelEvent = new Event('cancel', { bubbles: true, composed: true });
+    event.target.dispatchEvent(cancelEvent);
+  }
+
+  _confirm(event) {
+    this.close();
+    const confirmEvent = new Event('confirm');
+    event.target.dispatchEvent(confirmEvent);
   }
 }
 
