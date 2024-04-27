@@ -19,8 +19,18 @@
   </head>
 
   <body>
-    <uc-modal></uc-modal>
+    <uc-modal>
+      <p>Please pay the full amount!</p>
+    </uc-modal>
     <p>Please confirm your choice</p>
-    <button type="button">Confirm</button>
+    <button type="button" id="confirmBtn">Confirm</button>
+
+    <script>
+      const confirmBtn = document.querySelector('#confirmBtn');
+      const modal = document.querySelector('uc-modal');
+      confirmBtn.addEventListener('click', () => {
+        modal.setAttribute('opened', '');
+      });
+    </script>
   </body>
 </html>
